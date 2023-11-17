@@ -11,10 +11,9 @@ import BrightnessAutoIcon from '@mui/icons-material/BrightnessAuto';
 import InfoIcon from '@mui/icons-material/Info';
 import FullScreenIcon from '@mui/icons-material/Fullscreen';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import AppService from './services/AppService';
 
 import './App.css';
-
-const AppCtx = React.createContext({});
 
 const theme = createTheme({
     palette: {
@@ -24,45 +23,40 @@ const theme = createTheme({
 
 function App() {
 
-    const [ctx, setCtx] = React.useState({isPlatformDarkMode: false});
-
-    const toggleTheme = () => {
-        setCtx({isPlatformDarkMode: ctx.isPlatformDarkMode !== true});
-    }
+    const [platformDarkMode, setPlatformDarkMode] = React.useState(false);
+    let app = new AppService(platformDarkMode, setPlatformDarkMode);
 
     return (
         <div>
-            <AppCtx.Provider value={ctx}>
-                <ThemeProvider theme={theme}>
-                    <Box>
-                        <AppBar position="static" sx={{ bgcolor: ctx.isPlatformDarkMode ? theme.palette.primary.dark : theme.palette.primary.light }}>
-                            <Toolbar className="space-x-5">
-                                <IconButton size="small" color="inherit" aria-label="add">
-                                    <AddIcon />
-                                </IconButton>
-                                <IconButton size="small" color="inherit" aria-label="order">
-                                    <ReorderIcon></ReorderIcon>
-                                </IconButton>
-                                <IconButton size="small" color="inherit" aria-label="cloud">
-                                    <CloudIcon></CloudIcon>
-                                </IconButton>
-                                <IconButton size="small" color="inherit" aria-label="mode" onClick={toggleTheme}>
-                                    <BrightnessAutoIcon></BrightnessAutoIcon>
-                                </IconButton>
-                                <IconButton size="small" color="inherit" aria-label="mode">
-                                    <InfoIcon></InfoIcon>
-                                </IconButton>
-                                <div className="grow"></div>
-                                <Button color="inherit"><FullScreenIcon></FullScreenIcon>&nbsp;Full Screen</Button>
-                            </Toolbar>
-                        </AppBar>
-                    </Box>
+            <ThemeProvider theme={theme}>
+                <Box>
+                    <AppBar position="static" sx={{ bgcolor: app.platformDarkMode ? theme.palette.primary.dark : theme.palette.primary.light }}>
+                        <Toolbar className="space-x-5">
+                            <IconButton size="small" color="inherit" aria-label="add">
+                                <AddIcon />
+                            </IconButton>
+                            <IconButton size="small" color="inherit" aria-label="order">
+                                <ReorderIcon></ReorderIcon>
+                            </IconButton>
+                            <IconButton size="small" color="inherit" aria-label="cloud">
+                                <CloudIcon></CloudIcon>
+                            </IconButton>
+                            <IconButton size="small" color="inherit" aria-label="mode" onClick={()=>app.toggleTheme()}>
+                                <BrightnessAutoIcon></BrightnessAutoIcon>
+                            </IconButton>
+                            <IconButton size="small" color="inherit" aria-label="mode">
+                                <InfoIcon></InfoIcon>
+                            </IconButton>
+                            <div className="grow"></div>
+                            <Button color="inherit"><FullScreenIcon></FullScreenIcon>&nbsp;Full Screen</Button>
+                        </Toolbar>
+                    </AppBar>
+                </Box>
 
-                    <main className="flex min-h-screen flex-row items-center justify-center p-4">
-                        <Button variant="outlined">Hello World</Button>
-                    </main>
-                </ThemeProvider>
-            </AppCtx.Provider>
+                <main className="flex min-h-screen flex-row items-center justify-center p-4">
+                    <Button variant="outlined">Hello World</Button>
+                </main>
+            </ThemeProvider>
         </div>
     );
 }
