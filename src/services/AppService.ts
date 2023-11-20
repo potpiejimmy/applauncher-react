@@ -1,4 +1,6 @@
-export default class AppService {
+import React from 'react';
+
+export class AppService {
 
     constructor(
         public platformDarkMode: boolean,
@@ -9,3 +11,5 @@ export default class AppService {
         this.setPlatformDarkMode(this.platformDarkMode !== true);
     }
 }
+
+export const AppContext = React.createContext<AppService|null>(null);

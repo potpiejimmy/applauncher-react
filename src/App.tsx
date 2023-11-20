@@ -1,7 +1,7 @@
 import React from 'react';
-import Button from '@mui/material/Button';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/AddBox';
@@ -11,7 +11,10 @@ import BrightnessAutoIcon from '@mui/icons-material/BrightnessAuto';
 import InfoIcon from '@mui/icons-material/Info';
 import FullScreenIcon from '@mui/icons-material/Fullscreen';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import AppService from './services/AppService';
+
+import { AppService, AppContext } from './services/AppService';
+
+import DummyComponent from './components/DummyComponent';
 
 import './App.css';
 
@@ -24,10 +27,10 @@ const theme = createTheme({
 function App() {
 
     const [platformDarkMode, setPlatformDarkMode] = React.useState(false);
-    let app = new AppService(platformDarkMode, setPlatformDarkMode);
+    const app = new AppService(platformDarkMode, setPlatformDarkMode);
 
     return (
-        <div>
+        <AppContext.Provider value={app}>
             <ThemeProvider theme={theme}>
                 <Box>
                     <AppBar position="static" sx={{ bgcolor: app.platformDarkMode ? theme.palette.primary.dark : theme.palette.primary.light }}>
@@ -54,10 +57,10 @@ function App() {
                 </Box>
 
                 <main className="flex min-h-screen flex-row items-center justify-center p-4">
-                    <Button variant="outlined">Hello World</Button>
+                    <DummyComponent></DummyComponent>
                 </main>
             </ThemeProvider>
-        </div>
+        </AppContext.Provider>
     );
 }
 
