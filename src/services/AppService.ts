@@ -1,25 +1,41 @@
 import React from 'react';
 
-export class AppService {
+interface AppState {
+    mode: string;
+}
+
+export class AppService extends React.Component<any,AppState> {
 
     modes = ['Light','Dark','Auto'];
 
-    constructor(
-        public mode: string,
-        public setMode: React.Dispatch<React.SetStateAction<string>>) {
+    constructor(props: any) {
+        super(props);
+        this.state = {mode: 'Auto'};
+    }
+
+    load() {
+        //let storedApps = localStorage.getItem("apps");
+        //if (storedApps) this.apps = JSON.parse(storedApps);
+        let mode = localStorage.getItem("mode");
+        if (mode) this.setState({mode: mode});
+    }
+
+    save() {
+        //localStorage.setItem("apps", JSON.stringify(this.apps));
+        localStorage.setItem("mode", this.state.mode);
     }
 
     toggleMode() {
-        let ix = this.modes.indexOf(this.mode);
-        this.setMode(this.modes[(ix + 1) % 3]);
-        //this.save();
+        let ix = this.modes.indexOf(this.state.mode);
+        let mode = this.modes[(ix + 1) % 3];
+        this.setState({mode: mode});
     }
 
-    darkMode(): boolean {
-        if (this.mode == 'Auto') {
+    get darkMode(): boolean {
+        if (this.state.mode == 'Auto') {
             return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         } else {
-            return this.mode == 'Dark';
+            return this.state.mode == 'Dark';
         }
     }
 }

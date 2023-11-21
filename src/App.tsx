@@ -1,4 +1,3 @@
-import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -26,45 +25,55 @@ const theme = createTheme({
     },
 });
 
-function App() {
+class App extends AppService {
 
-    const [mode, setMode] = React.useState('Auto');
-    const app = new AppService(mode, setMode);
+    componentDidMount() {
+        this.load();
+    }
 
-    return (
-        <AppContext.Provider value={app}>
-            <ThemeProvider theme={theme}>
-                <Box>
-                    <AppBar position="static" sx={{ bgcolor: ()=>app.darkMode() ? theme.palette.primary.dark : theme.palette.primary.light }}>
-                        <Toolbar className="space-x-5">
-                            <IconButton size="small" color="inherit" aria-label="add">
-                                <AddIcon />
-                            </IconButton>
-                            <IconButton size="small" color="inherit" aria-label="order">
-                                <ReorderIcon></ReorderIcon>
-                            </IconButton>
-                            <IconButton size="small" color="inherit" aria-label="cloud">
-                                <CloudIcon></CloudIcon>
-                            </IconButton>
-                            <IconButton size="small" color="inherit" aria-label="mode" onClick={()=>app.toggleMode()}>
-                                {app.mode == 'Auto' ? <BrightnessAutoIcon></BrightnessAutoIcon> :
-                                     (app.mode == 'Dark' ? <DarkModeIcon></DarkModeIcon> : <LightModeIcon></LightModeIcon>)}
-                            </IconButton>
-                            <IconButton size="small" color="inherit" aria-label="mode">
-                                <InfoIcon></InfoIcon>
-                            </IconButton>
-                            <div className="grow"></div>
-                            <Button color="inherit"><FullScreenIcon></FullScreenIcon>&nbsp;Full Screen</Button>
-                        </Toolbar>
-                    </AppBar>
-                </Box>
+    componentDidUpdate() {
+        // update HTML background according to theme
+        document.body.style.backgroundColor = this.darkMode ? "#111" : "#eee";
+        this.save();
+    }
 
-                <main className="flex min-h-screen flex-row items-center justify-center p-4">
-                    <DummyComponent></DummyComponent>
-                </main>
-            </ThemeProvider>
-        </AppContext.Provider>
-    );
+    render() {
+
+        return (
+            <AppContext.Provider value={this}>
+                <ThemeProvider theme={theme}>
+                    <Box>
+                        <AppBar position="static" sx={{ bgcolor: this.darkMode ? theme.palette.primary.dark : theme.palette.primary.light }}>
+                            <Toolbar className="space-x-5">
+                                <IconButton size="small" color="inherit" aria-label="add">
+                                    <AddIcon />
+                                </IconButton>
+                                <IconButton size="small" color="inherit" aria-label="order">
+                                    <ReorderIcon></ReorderIcon>
+                                </IconButton>
+                                <IconButton size="small" color="inherit" aria-label="cloud">
+                                    <CloudIcon></CloudIcon>
+                                </IconButton>
+                                <IconButton size="small" color="inherit" aria-label="mode" onClick={()=>this.toggleMode()}>
+                                    {this.state.mode == 'Auto' ? <BrightnessAutoIcon></BrightnessAutoIcon> :
+                                        (this.state.mode == 'Dark' ? <DarkModeIcon></DarkModeIcon> : <LightModeIcon></LightModeIcon>)}
+                                </IconButton>
+                                <IconButton size="small" color="inherit" aria-label="mode">
+                                    <InfoIcon></InfoIcon>
+                                </IconButton>
+                                <div className="grow"></div>
+                                <Button color="inherit"><FullScreenIcon></FullScreenIcon>&nbsp;Full Screen</Button>
+                            </Toolbar>
+                        </AppBar>
+                    </Box>
+
+                    <main className="flex min-h-screen flex-row items-center justify-center p-4">
+                        <DummyComponent></DummyComponent>
+                    </main>
+                </ThemeProvider>
+            </AppContext.Provider>
+        );
+    }
 }
 
 export default App;
