@@ -2,13 +2,25 @@ import React from 'react';
 
 export class AppService {
 
+    modes = ['Light','Dark','Auto'];
+
     constructor(
-        public platformDarkMode: boolean,
-        public setPlatformDarkMode: React.Dispatch<React.SetStateAction<boolean>>) {
+        public mode: string,
+        public setMode: React.Dispatch<React.SetStateAction<string>>) {
     }
 
-    toggleTheme() {
-        this.setPlatformDarkMode(this.platformDarkMode !== true);
+    toggleMode() {
+        let ix = this.modes.indexOf(this.mode);
+        this.setMode(this.modes[(ix + 1) % 3]);
+        //this.save();
+    }
+
+    darkMode(): boolean {
+        if (this.mode == 'Auto') {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        } else {
+            return this.mode == 'Dark';
+        }
     }
 }
 

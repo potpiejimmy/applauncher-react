@@ -8,6 +8,8 @@ import AddIcon from '@mui/icons-material/AddBox';
 import ReorderIcon from '@mui/icons-material/Reorder';
 import CloudIcon from '@mui/icons-material/Cloud';
 import BrightnessAutoIcon from '@mui/icons-material/BrightnessAuto';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import InfoIcon from '@mui/icons-material/Info';
 import FullScreenIcon from '@mui/icons-material/Fullscreen';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -26,14 +28,14 @@ const theme = createTheme({
 
 function App() {
 
-    const [platformDarkMode, setPlatformDarkMode] = React.useState(false);
-    const app = new AppService(platformDarkMode, setPlatformDarkMode);
+    const [mode, setMode] = React.useState('Auto');
+    const app = new AppService(mode, setMode);
 
     return (
         <AppContext.Provider value={app}>
             <ThemeProvider theme={theme}>
                 <Box>
-                    <AppBar position="static" sx={{ bgcolor: app.platformDarkMode ? theme.palette.primary.dark : theme.palette.primary.light }}>
+                    <AppBar position="static" sx={{ bgcolor: ()=>app.darkMode() ? theme.palette.primary.dark : theme.palette.primary.light }}>
                         <Toolbar className="space-x-5">
                             <IconButton size="small" color="inherit" aria-label="add">
                                 <AddIcon />
@@ -44,8 +46,9 @@ function App() {
                             <IconButton size="small" color="inherit" aria-label="cloud">
                                 <CloudIcon></CloudIcon>
                             </IconButton>
-                            <IconButton size="small" color="inherit" aria-label="mode" onClick={()=>app.toggleTheme()}>
-                                <BrightnessAutoIcon></BrightnessAutoIcon>
+                            <IconButton size="small" color="inherit" aria-label="mode" onClick={()=>app.toggleMode()}>
+                                {app.mode == 'Auto' ? <BrightnessAutoIcon></BrightnessAutoIcon> :
+                                     (app.mode == 'Dark' ? <DarkModeIcon></DarkModeIcon> : <LightModeIcon></LightModeIcon>)}
                             </IconButton>
                             <IconButton size="small" color="inherit" aria-label="mode">
                                 <InfoIcon></InfoIcon>

@@ -7,6 +7,6 @@ export default function DummyComponent() {
     const app = React.useContext(AppContext);
 
     return (
-        <Button variant="outlined" onClick={()=>app?.toggleTheme()}>Hello World</Button>
+        <Button variant="outlined" onClick={()=>app?.toggleMode()}>Hello World</Button>
     )
 }
