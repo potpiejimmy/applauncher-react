@@ -1,3 +1,4 @@
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -11,19 +12,15 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import InfoIcon from '@mui/icons-material/Info';
 import FullScreenIcon from '@mui/icons-material/Fullscreen';
+import Popover from '@mui/material/Popover';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { AppService, AppContext } from './services/AppService';
 
+import AddAppComponent from './components/AddAppComponent';
 import DummyComponent from './components/DummyComponent';
 
 import './App.css';
-
-const theme = createTheme({
-    palette: {
-      primary: { main: "#666" }
-    },
-});
 
 class App extends AppService {
 
@@ -39,13 +36,20 @@ class App extends AppService {
 
     render() {
 
+        const theme = createTheme({
+            palette: {
+                mode: this.muiMode,
+                primary: { main: "#888" }
+            },
+        });
+        
         return (
             <AppContext.Provider value={this}>
                 <ThemeProvider theme={theme}>
                     <Box>
-                        <AppBar position="static" sx={{ bgcolor: this.darkMode ? theme.palette.primary.dark : theme.palette.primary.light }}>
+                        <AppBar position="static">
                             <Toolbar className="space-x-5">
-                                <IconButton size="small" color="inherit" aria-label="add">
+                                <IconButton size="small" color="inherit" aria-label="add" onClick={event=>this.setState({anchorElement: event.currentTarget})}>
                                     <AddIcon />
                                 </IconButton>
                                 <IconButton size="small" color="inherit" aria-label="order">
@@ -70,6 +74,17 @@ class App extends AppService {
                     <main className="flex min-h-screen flex-row items-center justify-center p-4">
                         <DummyComponent></DummyComponent>
                     </main>
+
+                    <Popover
+                        open={this.state.anchorElement != null}
+                        anchorEl={this.state.anchorElement}
+                        onClose={()=>this.setState({anchorElement: null})}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}>
+                        <AddAppComponent></AddAppComponent>
+                    </Popover>  
                 </ThemeProvider>
             </AppContext.Provider>
         );

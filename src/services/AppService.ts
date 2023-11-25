@@ -1,7 +1,11 @@
 import React from 'react';
 
 interface AppState {
+    apps: Array<any>;
+    currentApps: Array<any>;
+    currentFolder: any;
     mode: string;
+    anchorElement: any;
 }
 
 export class AppService extends React.Component<any,AppState> {
@@ -10,7 +14,13 @@ export class AppService extends React.Component<any,AppState> {
 
     constructor(props: any) {
         super(props);
-        this.state = {mode: 'Auto'};
+        this.state = {
+            apps: [],
+            currentApps: [],
+            currentFolder: null,
+            mode: 'Auto',
+            anchorElement: null
+        };
     }
 
     load() {
@@ -37,6 +47,10 @@ export class AppService extends React.Component<any,AppState> {
         } else {
             return this.state.mode == 'Dark';
         }
+    }
+
+    get muiMode(): 'light' | 'dark' {
+        return this.darkMode ? 'dark' : 'light';
     }
 }
 
