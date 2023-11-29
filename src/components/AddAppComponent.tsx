@@ -3,11 +3,16 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import LinearProgress from '@mui/material/LinearProgress';
+import Card from '@mui/material/Card';
 
 import { AppContext } from '../services/AppService';
 
 interface AddAppState {
     selectedTab: number;
+    communityApps: any;
+    loading: boolean;
+    filter: string;
 }
 
 export default class AddAppComponent extends React.Component<any,AddAppState> {
@@ -18,18 +23,34 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
 
     indexedInputs = [ this.inpfilter, this.inpurl, this.inpfolder ];
 
+
     static contextType = AppContext;
     context!: React.ContextType<typeof AppContext>;
 
     constructor(props: any) {
         super(props);
         this.state = {
-            selectedTab: 0
+            selectedTab: 0,
+            communityApps: [],
+            loading: false,
+            filter: ''
         }
     }
 
     componentDidMount() {
         this.setDelayedFocus(this.inpfilter);
+        this.loadCommunityApps();
+    }
+
+    async loadCommunityApps() {
+        this.setState({loading: true});
+        try {
+            let apps = await this.app?.api.getCommunityApps();
+            this.setState({communityApps: apps});
+        } catch (err) {
+            // maybe show something here
+        }
+        this.setState({loading: false});
     }
 
     setDelayedFocus(inputRef: React.RefObject<HTMLInputElement>) {
@@ -41,8 +62,18 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
         this.setDelayedFocus(this.indexedInputs[newTab]);
     }
 
+    get app() {
+        return this.context;
+    }
+
+    get communityAppsFiltered(): any {
+        let lowfilter = this.state.filter.toLowerCase();
+        return this.state.communityApps.filter((c:any) => 
+            c.name.toLowerCase().indexOf(lowfilter)>=0 ||
+            c.url.toLowerCase().indexOf(lowfilter)>=0);
+    }
+
     render() {
-        let app = this.context;
         return (
             <div>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -53,7 +84,26 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
                     </Tabs>
                     <div role="tabpanel" hidden={this.state.selectedTab!=0}>
                         <Box className="p-5 flex flex-col gap-5" >
-                            <TextField inputRef={this.inpfilter} label="Quick filter" helperText="Filter by name or URL"></TextField>
+                            <TextField inputRef={this.inpfilter}
+                                       label="Quick filter"
+                                       helperText="Filter by name or URL"
+                                       value={this.state.filter} 
+                                       onChange={e=>this.setState({filter: e.target.value})}>
+                            </TextField>
+                            <div className="flex flex-col gap-1 text-sm">
+                                Found {this.communityAppsFiltered.length} of {this.state.communityApps.length} community apps
+                                {this.communityAppsFiltered.map((a:any) => (
+                                    <Card>
+                                        <div className="p-3 flex flex-row items-center gap-5">
+                                            <img width="32" height="32" src={a.icon}/>
+                                            <div className="flex flex-col">
+                                                <div>{a.name}</div>
+                                                <div className="text-xs">{a.url}</div>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
                         </Box>
                     </div>
                     <div role="tabpanel" hidden={this.state.selectedTab!=1}>
@@ -66,6 +116,7 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
                             <TextField inputRef={this.inpfolder} label="Enter folder name"></TextField>
                         </Box>
                     </div>
+                    {this.state.loading && <LinearProgress/>}
                 </Box>
             </div>
         )

@@ -1,4 +1,5 @@
 import React from 'react';
+import AppsApi from './AppsApi';
 
 interface AppState {
     apps: Array<any>;
@@ -12,6 +13,7 @@ interface AppState {
 export class AppService extends React.Component<any,AppState> {
 
     modes = ['Light','Dark','Auto'];
+    api = new AppsApi();
 
     constructor(props: any) {
         super(props);
