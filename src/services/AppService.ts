@@ -5,7 +5,8 @@ interface AppState {
     currentApps: Array<any>;
     currentFolder: any;
     mode: string;
-    anchorElement: any;
+    snackbarOpen: boolean;
+    anchorAdd: any;
 }
 
 export class AppService extends React.Component<any,AppState> {
@@ -19,7 +20,8 @@ export class AppService extends React.Component<any,AppState> {
             currentApps: [],
             currentFolder: null,
             mode: 'Auto',
-            anchorElement: null
+            snackbarOpen: false,
+            anchorAdd: null
         };
     }
 
@@ -38,7 +40,12 @@ export class AppService extends React.Component<any,AppState> {
     toggleMode() {
         let ix = this.modes.indexOf(this.state.mode);
         let mode = this.modes[(ix + 1) % 3];
-        this.setState({mode: mode});
+        this.setState({mode: mode, snackbarOpen: false});
+        this.openSnackbar();
+    }
+
+    openSnackbar() {
+        setTimeout(()=>this.setState({snackbarOpen: true}), 100);
     }
 
     get darkMode(): boolean {

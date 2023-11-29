@@ -12,7 +12,9 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import InfoIcon from '@mui/icons-material/Info';
 import FullScreenIcon from '@mui/icons-material/Fullscreen';
+import Snackbar from '@mui/material/Snackbar';
 import Popover from '@mui/material/Popover';
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { AppService, AppContext } from './services/AppService';
@@ -26,12 +28,17 @@ class App extends AppService {
 
     componentDidMount() {
         this.load();
+        this.updateHtmlBackground();
     }
 
     componentDidUpdate() {
+        this.updateHtmlBackground();
+        this.save();
+    }
+
+    updateHtmlBackground() {
         // update HTML background according to theme
         document.body.style.backgroundColor = this.darkMode ? "#111" : "#eee";
-        this.save();
     }
 
     render() {
@@ -49,7 +56,7 @@ class App extends AppService {
                     <Box>
                         <AppBar position="static">
                             <Toolbar className="space-x-5">
-                                <IconButton size="small" color="inherit" aria-label="add" onClick={event=>this.setState({anchorElement: event.currentTarget})}>
+                                <IconButton size="small" color="inherit" aria-label="add" onClick={event=>this.setState({anchorAdd: event.currentTarget})}>
                                     <AddIcon />
                                 </IconButton>
                                 <IconButton size="small" color="inherit" aria-label="order">
@@ -75,10 +82,17 @@ class App extends AppService {
                         <DummyComponent></DummyComponent>
                     </main>
 
+                    <Snackbar
+                        open={this.state.snackbarOpen}
+                        autoHideDuration={2000}
+                        onClose={()=>this.setState({snackbarOpen: false})}
+                        message={this.state.mode == 'Auto' ? 'Automatic dark/light mode activated' : this.state.mode + " mode activated" }
+                    />
+
                     <Popover
-                        open={this.state.anchorElement != null}
-                        anchorEl={this.state.anchorElement}
-                        onClose={()=>this.setState({anchorElement: null})}
+                        open={this.state.anchorAdd != null}
+                        anchorEl={this.state.anchorAdd}
+                        onClose={()=>this.setState({anchorAdd: null})}
                         anchorOrigin={{
                             vertical: 'bottom',
                             horizontal: 'left',
