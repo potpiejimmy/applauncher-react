@@ -25,7 +25,6 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
 
     indexedInputs = [ this.inpfilter, this.inpurl, this.inpfolder ];
 
-
     static contextType = AppContext;
     context!: React.ContextType<typeof AppContext>;
 
@@ -42,6 +41,10 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
     componentDidMount() {
         this.setDelayedFocus(this.inpfilter);
         this.loadCommunityApps();
+    }
+
+    get app() {
+        return this.context;
     }
 
     async loadCommunityApps() {
@@ -62,10 +65,6 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
     tabChanged(event: React.SyntheticEvent, newTab: number) {
         this.setState({selectedTab: newTab})
         this.setDelayedFocus(this.indexedInputs[newTab]);
-    }
-
-    get app() {
-        return this.context;
     }
 
     get communityAppsFiltered(): any {

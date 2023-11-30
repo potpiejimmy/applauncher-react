@@ -14,17 +14,15 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import InfoIcon from '@mui/icons-material/Info';
 import FullScreenIcon from '@mui/icons-material/Fullscreen';
 import EditIcon from '@mui/icons-material/Edit';
-import EditAttributesIcon from '@mui/icons-material/EditAttributes';
 import Snackbar from '@mui/material/Snackbar';
 import Popover from '@mui/material/Popover';
-import Card from '@mui/material/Card';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { AppService, AppContext } from './services/AppService';
+import PwaLauncher from './components/PwaLauncher';
 
 import AddAppComponent from './components/AddAppComponent';
-import DummyComponent from './components/DummyComponent';
 
 import './App.css';
 
@@ -94,15 +92,7 @@ class App extends AppService {
                         <div className="flex grow flex-row flex-wrap items-center justify-center content-center gap-5">
 
                             {this.state.currentApps.map((a:any) => 
-                                <Card key={a.id} className="w-48 h-32" sx={{':hover': { boxShadow: theme.shadows[5] }}} onClick={()=>this.onAppClicked(a)}>
-                                    {this.state.editing && <div className="z-10 absolute mx-2"><EditAttributesIcon></EditAttributesIcon></div>}
-                                    <div className="h-full p-3 flex flex-col items-center justify-center gap-5">
-                                        <img width="48" height="48" src={a.icon} onError={
-                                            e=>e.currentTarget.src='./www.png'
-                                        }/>
-                                        <div className="w-full text-center whitespace-nowrap overflow-hidden">{a.name}</div>
-                                    </div>
-                                </Card>
+                                <PwaLauncher pwa={a}/>
                             )}
                         </div>
 
