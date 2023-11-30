@@ -23,6 +23,7 @@ import { AppService, AppContext } from './services/AppService';
 import PwaLauncher from './components/PwaLauncher';
 
 import AddAppComponent from './components/AddAppComponent';
+import EditAppComponent from './components/EditAppComponent';
 
 import './App.css';
 
@@ -91,7 +92,7 @@ class App extends AppService {
 
                         <div className="flex grow flex-row flex-wrap items-center justify-center content-center gap-5">
 
-                            {this.state.currentApps.map((a:any) => 
+                            {this.state.currentApps.map((a:any) =>
                                 <PwaLauncher pwa={a}/>
                             )}
                         </div>
@@ -112,7 +113,10 @@ class App extends AppService {
                                 horizontal: 'left',
                             }}>
                             <AddAppComponent></AddAppComponent>
-                        </Popover>  
+                        </Popover>
+
+                        <EditAppComponent/>
+
                     </main>
                 </ThemeProvider>
             </AppContext.Provider>

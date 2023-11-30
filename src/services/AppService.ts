@@ -7,6 +7,7 @@ interface AppState {
     currentFolder: any;
     mode: string;
     snackbarOpen: boolean;
+    editingApp: any;
     editing: boolean;
     anchorAdd: any;
 }
@@ -27,6 +28,7 @@ export class AppService extends React.Component<any,AppState> {
             currentFolder: null,
             mode: 'Auto',
             snackbarOpen: false,
+            editingApp: null,
             editing: false,
             anchorAdd: null
         };
@@ -68,6 +70,7 @@ export class AppService extends React.Component<any,AppState> {
 
     closeDialogs() {
         this.setState({
+            editingApp: null,
             anchorAdd: null
         })
     }
@@ -98,13 +101,13 @@ export class AppService extends React.Component<any,AppState> {
     removeApp(app: any) {
         let ix = this.findAppIndex(app);
         if (ix >= 0) this.state.currentApps.splice(ix,1);
-        this.setState({currentApps: this.state.currentApps});
+        this.setState({currentApps: this.state.currentApps, editingApp: null});
         this.save();
     }
 
     onAppClicked(app: any) {
         if (this.state.editing) {
-            this.removeApp(app);
+            this.setState({editingApp: app})
         } else {
             if (this.isFolder(app)) {
                 //this.openFolder(this.app);
