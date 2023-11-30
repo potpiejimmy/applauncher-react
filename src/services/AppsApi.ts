@@ -7,7 +7,7 @@ export default class AppsApi {
     }
 
     getCommunityApps(): Promise<any> {
-        return fetch("https://api.applauncher.site/apps/community", this.requestOptions())
+        return fetch(process.env.REACT_APP_API_URL + "/apps/community", this.requestOptions())
             .then(res => res.json());
     }
 }
