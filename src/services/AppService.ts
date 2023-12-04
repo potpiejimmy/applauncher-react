@@ -98,9 +98,19 @@ export class AppService extends React.Component<any,AppState> {
         this.save();
     }
 
-    removeApp(app: any) {
-        let ix = this.findAppIndex(app);
+    removeCurrentApp() {
+        let ix = this.findAppIndex(this.state.editingApp);
         if (ix >= 0) this.state.currentApps.splice(ix,1);
+        this.updateApps();
+    }
+
+    updateCurrentApp() {
+        let ix = this.findAppIndex(this.state.editingApp);
+        if (ix >= 0) this.state.currentApps[ix] = this.state.editingApp;
+        this.updateApps();
+    }
+
+    updateApps() {
         this.setState({currentApps: this.state.currentApps, editingApp: null});
         this.save();
     }
