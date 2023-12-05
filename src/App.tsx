@@ -13,7 +13,8 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import InfoIcon from '@mui/icons-material/Info';
 import FullScreenIcon from '@mui/icons-material/Fullscreen';
-import EditIcon from '@mui/icons-material/Edit';
+import EditOnIcon from '@mui/icons-material/EditOutlined';
+import EditOffIcon from '@mui/icons-material/EditOffOutlined';
 import Snackbar from '@mui/material/Snackbar';
 import Popover from '@mui/material/Popover';
 
@@ -59,7 +60,7 @@ class App extends AppService {
 
                     <div className="fixed z-10 right-4 top-20">
                         <ToggleButton value="editing" selected={this.state.editing} onChange={()=>this.toggleEditMode()} aria-label="editing">
-                            <EditIcon></EditIcon>
+                            {this.state.editing ? <EditOffIcon/> : <EditOnIcon/>}
                         </ToggleButton>
                     </div>
 

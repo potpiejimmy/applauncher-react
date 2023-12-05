@@ -25,10 +25,6 @@ export default class EditAppComponent extends React.Component<EditAppProps,any> 
         return this.context;
     }
 
-    get open(): boolean {
-        return this.editingApp;
-    }
-
     get editingApp(): any {
         return this.app?.state.editingApp;
     }
@@ -60,13 +56,13 @@ export default class EditAppComponent extends React.Component<EditAppProps,any> 
     render() {
         
         return (
-            <Dialog open={this.open}
+            <Dialog open={this.editingApp != null}
                     onClose={()=>this.app?.closeDialogs()}
                     onKeyUp={e => e.key === 'Enter' && this.app?.updateCurrentApp()}
                     scroll="paper"
                     classes={{ scrollPaper: '!items-start' }}>
                 <DialogTitle>Edit</DialogTitle>
-                <DialogContent className='w-96 flex flex-col gap-3'>
+                <DialogContent className='w-[32rem] flex flex-col gap-3'>
                     <TextField
                         autoFocus
                         value={this.label}
@@ -75,20 +71,27 @@ export default class EditAppComponent extends React.Component<EditAppProps,any> 
                         label="Label"
                         fullWidth variant="standard"
                     />
-                    <TextField
-                        value={this.url}
-                        onChange={e => this.url = e.currentTarget.value}
-                        id="url"
-                        label="URL"
-                        fullWidth variant="standard"
-                    />
-                    <TextField
-                        value={this.icon}
-                        onChange={e => this.icon = e.currentTarget.value}
-                        id="icon"
-                        label="Icon"
-                        fullWidth variant="standard"
-                    />
+                    {!this.app?.isFolder(this.editingApp) &&
+                        <TextField
+                            value={this.url}
+                            onChange={e => this.url = e.currentTarget.value}
+                            id="url"
+                            label="URL"
+                            fullWidth variant="standard"
+                        />
+                    }
+                    {!this.app?.isFolder(this.editingApp) &&
+                            <TextField
+                            value={this.icon}
+                            onChange={e => this.icon = e.currentTarget.value}
+                            id="icon"
+                            label="Icon"
+                            fullWidth variant="standard"
+                        />
+                    }
+                    {this.app?.isFolder(this.editingApp) &&
+                        <div>Note: Deleting a folder also deletes all apps in the folder.</div>
+                    }
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={()=>this.app?.updateCurrentApp()}>OK</Button>

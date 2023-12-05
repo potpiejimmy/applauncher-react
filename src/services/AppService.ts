@@ -76,7 +76,7 @@ export class AppService extends React.Component<any,AppState> {
     }
 
     isFolder(app: any): boolean {
-        return app.url === 'folder://';
+        return app && app.url === 'folder://';
     }
 
     findAppIndex(app: any): number {
@@ -125,6 +125,11 @@ export class AppService extends React.Component<any,AppState> {
                 window.location.href = app.url;
             }
         }
+    }
+
+    openFolder(folder: any) {
+        this.setState({currentFolder: folder});
+        //this.folderAnimationState = 'open';
     }
 
     get darkMode(): boolean {

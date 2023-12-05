@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppContext } from "../services/AppService";
 import Card from '@mui/material/Card';
-import EditAttributesIcon from '@mui/icons-material/EditAttributes';
+import EditAttributesIcon from '@mui/icons-material/ModeEditOutlined';
 import { useTheme } from '@mui/material/styles';
 
 export default function PwaLauncher({ pwa }: any) {

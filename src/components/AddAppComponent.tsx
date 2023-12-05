@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import LinearProgress from '@mui/material/LinearProgress';
 import Card from '@mui/material/Card';
+import Button from '@mui/material/Button'
 
 import { v4 as uuid } from 'uuid';
 
@@ -15,6 +16,7 @@ interface AddAppState {
     communityApps: any;
     loading: boolean;
     filter: string;
+    folder: string;
 }
 
 export default class AddAppComponent extends React.Component<any,AddAppState> {
@@ -34,7 +36,8 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
             selectedTab: 0,
             communityApps: [],
             loading: false,
-            filter: ''
+            filter: '',
+            folder: ''
         }
     }
 
@@ -83,6 +86,19 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
         this.app?.closeDialogs();
     }
 
+    async addFolder() {
+        let folder = {
+            id: uuid(),
+            url: "folder://",
+            name: this.state.folder,
+            icon: '/assets/appfolder.png',
+            apps: []
+        };
+        this.app?.addApp(folder);
+        this.app?.openFolder(folder);
+        this.app?.closeDialogs();
+    }
+
     render() {
         return (
             <div>
@@ -98,8 +114,7 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
                                        label="Quick filter"
                                        helperText="Filter by name or URL"
                                        value={this.state.filter} 
-                                       onChange={e=>this.setState({filter: e.target.value})}>
-                            </TextField>
+                                       onChange={e=>this.setState({filter: e.target.value})}/>
                             <div className="flex flex-col gap-1 text-sm">
                                 Found {this.communityAppsFiltered.length} of {this.state.communityApps.length} community apps
                                 {this.communityAppsFiltered.map((a:any) =>
@@ -120,12 +135,27 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
                     </div>
                     <div role="tabpanel" hidden={this.state.selectedTab!=1}>
                         <Box className="p-5 flex flex-col gap-5" >
-                            <TextField inputRef={this.inpurl} label="Enter custom URL"></TextField>
+                            <TextField inputRef={this.inpurl}
+                                       label="Enter custom URL"/>
                         </Box>
                     </div>
                     <div role="tabpanel" hidden={this.state.selectedTab!=2}>
                         <Box className="p-5 flex flex-col gap-5" >
-                            <TextField inputRef={this.inpfolder} label="Enter folder name"></TextField>
+                            <TextField inputRef={this.inpfolder}
+                                       label="Enter folder name"
+                                       value={this.state.folder}
+                                       onChange={e=>this.setState({folder: e.target.value})}
+                                       onKeyUp={e => e.key === 'Enter' && this.state.folder.length && this.addFolder()}/>
+                            <div className="flex-col">
+                                <Button variant="contained"
+                                        disabled={!this.state.folder.length}
+                                        onClick={()=>this.addFolder()}>
+                                    Create folder
+                                </Button>
+                            </div>
+                            <div>
+                                Note: Switch to edit mode to move an App into a folder
+                            </div>
                         </Box>
                     </div>
                     {this.state.loading && <LinearProgress/>}
