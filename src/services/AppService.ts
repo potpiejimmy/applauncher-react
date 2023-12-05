@@ -8,6 +8,7 @@ interface AppState {
     mode: string;
     snackbarOpen: boolean;
     editingApp: any;
+    editingAppFolderId: any;
     editing: boolean;
     anchorAdd: any;
 }
@@ -29,6 +30,7 @@ export class AppService extends React.Component<any,AppState> {
             mode: 'Auto',
             snackbarOpen: false,
             editingApp: null,
+            editingAppFolderId: null,
             editing: false,
             anchorAdd: null
         };
@@ -75,6 +77,10 @@ export class AppService extends React.Component<any,AppState> {
         })
     }
 
+    getFolders(): Array<any> {
+        return this.state.apps.filter(app => this.isFolder(app));
+    }
+
     isFolder(app: any): boolean {
         return app && app.url === 'folder://';
     }
@@ -91,7 +97,7 @@ export class AppService extends React.Component<any,AppState> {
     addApp(app: any) {
         if (this.isFolder(app)) {
             // for now, do not allow folders in folder
-            //this.closeFolderImmediate();
+            this.closeFolderImmediate();
         }
         this.state.currentApps.push(app);
         this.setState({currentApps: this.state.currentApps});
@@ -101,36 +107,85 @@ export class AppService extends React.Component<any,AppState> {
     removeCurrentApp() {
         let ix = this.findAppIndex(this.state.editingApp);
         if (ix >= 0) this.state.currentApps.splice(ix,1);
-        this.updateApps();
+        this.updateApps(this.state.currentApps, this.state.currentFolder);
     }
 
     updateCurrentApp() {
+        let currentFolder = this.state.currentFolder;
+        let currentApps = this.state.currentApps;
+
         let ix = this.findAppIndex(this.state.editingApp);
-        if (ix >= 0) this.state.currentApps[ix] = this.state.editingApp;
-        this.updateApps();
+        if (ix >= 0) currentApps[ix] = this.state.editingApp;
+
+        if ((currentFolder?.id || 'root') != this.state.editingAppFolderId) {
+            // folder was changed - remove and re-add to new folder:
+            currentApps.splice(ix,1);
+            if (this.state.editingAppFolderId == 'root') {
+                // move to root folder:
+                currentFolder = null;
+                currentApps = this.state.apps;
+            } else {
+                currentFolder = this.getFolders().find(i => i.id == this.state.editingAppFolderId);
+                currentApps = currentFolder.apps;
+
+            }
+            currentApps.push(this.state.editingApp);
+        }
+
+        this.updateApps(currentApps, currentFolder);
     }
 
-    updateApps() {
-        this.setState({currentApps: this.state.currentApps, editingApp: null});
+    updateApps(apps: any, currentFolder: any) {
+        this.setState({
+            currentApps: apps,
+            editingApp: null,
+            currentFolder: currentFolder
+        });
         this.save();
     }
 
-    onAppClicked(app: any) {
+    onAppClicked(app: any, el: HTMLDivElement) {
         if (this.state.editing) {
-            this.setState({editingApp: app})
+            this.editApp(app);
         } else {
             if (this.isFolder(app)) {
-                //this.openFolder(this.app);
+                this.openFolder(app, el);
             } else {
                 window.location.href = app.url;
             }
         }
     }
 
-    openFolder(folder: any) {
-        this.setState({currentFolder: folder});
-        //this.folderAnimationState = 'open';
+    editApp(app: any) {
+        this.setState({
+            editingApp: app,
+            editingAppFolderId: this.state.currentFolder?.id || 'root'
+        });
     }
+
+    closeFolderImmediate() {
+        if (this.state.currentFolder) {
+            this.setState({
+                currentFolder: null,
+                currentApps: this.state.apps
+            });
+        }
+    }
+
+    openFolder(folder: any, el?: HTMLDivElement) {
+        if (el) {
+            el.style.animation = "folderAnim .4s linear";
+        }
+        setTimeout(()=>this.folderOpened(folder), 250);
+    }
+
+    folderOpened(folder: any) {
+        this.setState({
+            currentFolder: folder,
+            currentApps: folder.apps
+        });
+    }
+
 
     get darkMode(): boolean {
         if (this.state.mode == 'Auto') {

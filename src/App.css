@@ -1,0 +1,4 @@
+@keyframes folderAnim {
+    from { transform: scale(1); opacity: 1 }
+    to { transform: scale(6); opacity: 0; }
+}

@@ -64,6 +64,13 @@ class App extends AppService {
                         </ToggleButton>
                     </div>
 
+                    {this.state.currentFolder && 
+                        <div className="fixed z-10 left-4 top-20">
+                            <Button variant="outlined" onClick={()=>this.closeFolderImmediate()} aria-label="close folder">
+                                CLOSE {this.state.currentFolder.name}
+                            </Button>
+                        </div>
+                    }
                     <main className="flex min-h-screen flex-col">
 
                         <Box>
@@ -85,7 +92,7 @@ class App extends AppService {
                                     <IconButton size="small" color="inherit" aria-label="mode">
                                         <InfoIcon></InfoIcon>
                                     </IconButton>
-                                    <div className="grow"></div>
+                                    <div className="grow"/>
                                     <Button color="inherit"><FullScreenIcon></FullScreenIcon><span className="hidden sm:inline">&nbsp;Full Screen</span></Button>
                                 </Toolbar>
                             </AppBar>
@@ -94,7 +101,9 @@ class App extends AppService {
                         <div className="flex grow flex-row flex-wrap items-center justify-center content-center gap-5">
 
                             {this.state.currentApps.map((a:any) =>
-                                <PwaLauncher pwa={a}/>
+                                <div key={a.id}>
+                                    <PwaLauncher pwa={a}/>
+                                </div>
                             )}
                         </div>
 

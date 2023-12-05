@@ -6,11 +6,17 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 interface EditAppProps {
 }
+interface EditAppState {
+}
 
-export default class EditAppComponent extends React.Component<EditAppProps,any> {
+export default class EditAppComponent extends React.Component<EditAppProps,EditAppState> {
 
     static contextType = AppContext;
     context!: React.ContextType<typeof AppContext>;
@@ -53,6 +59,14 @@ export default class EditAppComponent extends React.Component<EditAppProps,any> 
         this.app?.setState({editingApp: { ...this.editingApp, icon: icon }});
     }
 
+    get folderId(): any {
+        return this.app?.state.editingAppFolderId;
+    }
+
+    set folderId(folderId: any) {
+        this.app?.setState({editingAppFolderId: folderId});
+    }
+
     render() {
         
         return (
@@ -81,13 +95,29 @@ export default class EditAppComponent extends React.Component<EditAppProps,any> 
                         />
                     }
                     {!this.app?.isFolder(this.editingApp) &&
-                            <TextField
+                        <TextField
                             value={this.icon}
                             onChange={e => this.icon = e.currentTarget.value}
                             id="icon"
                             label="Icon"
                             fullWidth variant="standard"
                         />
+                    }
+                    {!this.app?.isFolder(this.editingApp) &&
+                        <FormControl variant="standard">
+                            <InputLabel>Folder</InputLabel>
+                            <Select
+                                    value={this.folderId}
+                                    onChange={e => this.folderId = e.target.value}
+                                    id="folder"
+                                    label="Folder"
+                                    fullWidth variant="standard">
+                                <MenuItem value="root"><em>&lt;Root folder&gt;</em></MenuItem>
+                                {this.app?.getFolders().map(f => 
+                                    <MenuItem value={f.id}>{f.name}</MenuItem>
+                                )}
+                            </Select>
+                        </FormControl>
                     }
                     {this.app?.isFolder(this.editingApp) &&
                         <div>Note: Deleting a folder also deletes all apps in the folder.</div>
