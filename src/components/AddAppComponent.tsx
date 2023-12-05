@@ -6,6 +6,9 @@ import TextField from '@mui/material/TextField';
 import LinearProgress from '@mui/material/LinearProgress';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button'
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 import { v4 as uuid } from 'uuid';
 
@@ -16,6 +19,9 @@ interface AddAppState {
     communityApps: any;
     loading: boolean;
     filter: string;
+    url: string;
+    sensitive: boolean;
+    community: boolean;
     folder: string;
 }
 
@@ -37,6 +43,9 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
             communityApps: [],
             loading: false,
             filter: '',
+            url: 'https://',
+            sensitive: false,
+            community: false,
             folder: ''
         }
     }
@@ -99,6 +108,35 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
         this.app?.closeDialogs();
     }
 
+    async addCustomApp() {
+        this.setState({loading: true});
+        try {
+            let url = this.state.url;
+            console.log("Adding: " + url);
+            let appInfo;
+            if (this.state.sensitive) {
+                appInfo = {
+                    id: uuid(),
+                    url: url,
+                    name: url,
+                    icon: '/lock.png'
+                }
+            } else {
+                appInfo = await this.app?.api.getAppInfo({
+                    url: url,
+                    suggestCommunity: this.state.community
+                });
+            }
+            console.log("RESOLVED: " + JSON.stringify(appInfo));
+            this.app?.addApp(appInfo);
+            this.app?.closeDialogs();
+        } catch (err) {
+            this.app?.openSnackbar("Error:" + err);
+        } finally {
+            this.setState({loading: false, url: "https://"});
+        }
+    }
+
     render() {
         return (
             <div>
@@ -136,7 +174,30 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
                     <div role="tabpanel" hidden={this.state.selectedTab!=1}>
                         <Box className="p-5 flex flex-col gap-5" >
                             <TextField inputRef={this.inpurl}
-                                       label="Enter custom URL"/>
+                                       label="Enter custom URL"
+                                       value={this.state.url}
+                                       onChange={e=>this.setState({url: e.target.value})}
+                                       disabled={this.state.loading}
+                                       onKeyUp={e => e.key === 'Enter' && this.state.url.length>10 && !this.state.loading && this.addCustomApp()}/>
+                            <FormGroup>
+                                <FormControlLabel control={
+                                    <Checkbox checked={this.state.sensitive}
+                                              onChange={e=>this.setState({sensitive: e.target.checked})}
+                                              disabled={this.state.community}/>
+                                } label="Private URL (do not resolve icon and name)" />
+                                <FormControlLabel control={
+                                    <Checkbox checked={this.state.community}
+                                              onChange={e=>this.setState({community: e.target.checked})}
+                                              disabled={this.state.sensitive}/>
+                                } label="Suggest as a Community App" />
+                            </FormGroup>
+                            <div className="flex-col">
+                                <Button variant="contained"
+                                            disabled={this.state.url.length<=10}
+                                            onClick={()=>this.addCustomApp()}>
+                                        Add App
+                                </Button>
+                            </div>
                         </Box>
                     </div>
                     <div role="tabpanel" hidden={this.state.selectedTab!=2}>
@@ -154,7 +215,7 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
                                 </Button>
                             </div>
                             <div>
-                                Note: Switch to edit mode to move an App into a folder
+                                Enable edit mode to move an app to a different folder
                             </div>
                         </Box>
                     </div>

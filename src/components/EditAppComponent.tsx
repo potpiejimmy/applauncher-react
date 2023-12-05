@@ -3,7 +3,6 @@ import { AppContext } from '../services/AppService';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import InputLabel from '@mui/material/InputLabel';
@@ -75,7 +74,6 @@ export default class EditAppComponent extends React.Component<EditAppProps,EditA
                     onKeyUp={e => e.key === 'Enter' && this.app?.updateCurrentApp()}
                     scroll="paper"
                     classes={{ scrollPaper: '!items-start' }}>
-                <DialogTitle>Edit</DialogTitle>
                 <DialogContent className='w-[32rem] flex flex-col gap-3'>
                     <TextField
                         autoFocus

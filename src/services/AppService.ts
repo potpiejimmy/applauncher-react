@@ -95,13 +95,15 @@ export class AppService extends React.Component<any,AppState> {
     }
 
     addApp(app: any) {
+        let currentFolder = this.state.currentFolder;
+        let currentApps = this.state.currentApps;
         if (this.isFolder(app)) {
             // for now, do not allow folders in folder
-            this.closeFolderImmediate();
+            currentFolder = null;
+            currentApps = this.state.apps;
         }
-        this.state.currentApps.push(app);
-        this.setState({currentApps: this.state.currentApps});
-        this.save();
+        currentApps.push(app);
+        this.updateApps(currentApps, currentFolder);
     }
 
     removeCurrentApp() {
@@ -174,9 +176,9 @@ export class AppService extends React.Component<any,AppState> {
 
     openFolder(folder: any, el?: HTMLDivElement) {
         if (el) {
-            el.style.animation = "folderAnim .4s linear";
+            el.style.animation = "folderAnim .2s linear";
         }
-        setTimeout(()=>this.folderOpened(folder), 250);
+        setTimeout(()=>this.folderOpened(folder), 200);
     }
 
     folderOpened(folder: any) {

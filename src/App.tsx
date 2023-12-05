@@ -45,6 +45,14 @@ class App extends AppService {
         document.body.style.backgroundColor = this.darkMode ? "#111" : "#eee";
     }
 
+    info() {
+        window.location.href='https://www.youtube.com/channel/UC6h8aqlVqboag4CJjZ9qCCw/about';
+    }
+
+    fullscreen() {
+        window.location.href='https://youtube.com/redirect?q=applauncher.site';
+    }
+
     render() {
 
         const theme = createTheme({
@@ -89,11 +97,11 @@ class App extends AppService {
                                         {this.state.mode == 'Auto' ? <BrightnessAutoIcon></BrightnessAutoIcon> :
                                             (this.state.mode == 'Dark' ? <DarkModeIcon></DarkModeIcon> : <LightModeIcon></LightModeIcon>)}
                                     </IconButton>
-                                    <IconButton size="small" color="inherit" aria-label="mode">
+                                    <IconButton size="small" color="inherit" aria-label="info" onClick={()=>this.info()}>
                                         <InfoIcon></InfoIcon>
                                     </IconButton>
                                     <div className="grow"/>
-                                    <Button color="inherit"><FullScreenIcon></FullScreenIcon><span className="hidden sm:inline">&nbsp;Full Screen</span></Button>
+                                    <Button color="inherit" onClick={()=>this.fullscreen()}><FullScreenIcon></FullScreenIcon><span className="hidden sm:inline">&nbsp;Full Screen</span></Button>
                                 </Toolbar>
                             </AppBar>
                         </Box>
