@@ -193,7 +193,7 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
                             </FormGroup>
                             <div className="flex-col">
                                 <Button variant="contained"
-                                            disabled={this.state.url.length<=10}
+                                            disabled={this.state.url.length<=10 || this.state.loading}
                                             onClick={()=>this.addCustomApp()}>
                                         Add App
                                 </Button>

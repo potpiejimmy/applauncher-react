@@ -5,10 +5,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import FolderIcon from '@mui/icons-material/FolderOutlined'
 
 interface EditAppProps {
 }
@@ -74,36 +73,41 @@ export default class EditAppComponent extends React.Component<EditAppProps,EditA
                     onKeyUp={e => e.key === 'Enter' && this.app?.updateCurrentApp()}
                     scroll="paper"
                     classes={{ scrollPaper: '!items-start' }}>
-                <DialogContent className='w-[32rem] flex flex-col gap-3'>
-                    <TextField
-                        autoFocus
-                        value={this.label}
-                        onChange={e => this.label = e.currentTarget.value}
-                        id="label"
-                        label="Label"
-                        fullWidth variant="standard"
-                    />
-                    {!this.app?.isFolder(this.editingApp) &&
-                        <TextField
-                            value={this.url}
-                            onChange={e => this.url = e.currentTarget.value}
-                            id="url"
-                            label="URL"
-                            fullWidth variant="standard"
-                        />
-                    }
-                    {!this.app?.isFolder(this.editingApp) &&
-                        <TextField
-                            value={this.icon}
-                            onChange={e => this.icon = e.currentTarget.value}
-                            id="icon"
-                            label="Icon"
-                            fullWidth variant="standard"
-                        />
-                    }
-                    {!this.app?.isFolder(this.editingApp) &&
-                        <FormControl variant="standard">
-                            <InputLabel>Folder</InputLabel>
+                <div className="mx-3 w-[30rem] flex flex-col gap-2">
+                    <div className="p-3">
+                        <div className="flex flex-col gap-3">
+                            <TextField
+                                autoFocus
+                                value={this.label}
+                                onChange={e => this.label = e.currentTarget.value}
+                                id="label"
+                                label="Label"
+                                fullWidth variant="standard"
+                            />
+                            {this.editingApp && !this.app?.isFolder(this.editingApp) &&
+                                <TextField
+                                    value={this.url}
+                                    onChange={e => this.url = e.currentTarget.value}
+                                    id="url"
+                                    label="URL"
+                                    fullWidth variant="standard"
+                                />
+                            }
+                            {this.editingApp && !this.app?.isFolder(this.editingApp) &&
+                                <TextField
+                                    value={this.icon}
+                                    onChange={e => this.icon = e.currentTarget.value}
+                                    id="icon"
+                                    label="Icon"
+                                    fullWidth variant="standard"
+                                    helperText="Customize the icon by using any external icon URL here"
+                                />
+                            }
+                        </div>
+                    </div>
+                    {this.editingApp && !this.app?.isFolder(this.editingApp) &&
+                        <fieldset className="border border-gray-400 px-3 pb-3">
+                            <legend className="p-1 text-sm"><FolderIcon/> Move to Folder</legend>
                             <Select
                                     value={this.folderId}
                                     onChange={e => this.folderId = e.target.value}
@@ -115,12 +119,12 @@ export default class EditAppComponent extends React.Component<EditAppProps,EditA
                                     <MenuItem value={f.id}>{f.name}</MenuItem>
                                 )}
                             </Select>
-                        </FormControl>
+                        </fieldset>
                     }
                     {this.app?.isFolder(this.editingApp) &&
-                        <div>Note: Deleting a folder also deletes all apps in the folder.</div>
+                        <div className="p-3">Note: Deleting a folder also deletes all apps in the folder.</div>
                     }
-                </DialogContent>
+                </div>
                 <DialogActions>
                     <Button onClick={()=>this.app?.updateCurrentApp()}>OK</Button>
                     <Button onClick={()=>this.app?.closeDialogs()}>Cancel</Button>
