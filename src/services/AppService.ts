@@ -7,9 +7,9 @@ interface AppState {
     currentFolder: any;
     mode: string;
     snackbarOpen: boolean;
+    editing: boolean;
     editingApp: any;
     editingAppFolderId: any;
-    editing: boolean;
     anchorAdd: any;
 }
 
@@ -19,7 +19,8 @@ export class AppService extends React.Component<any,AppState> {
     api = new AppsApi();
 
     constructor(props: any,
-        public snackbarText: string) {
+        public snackbarText: string,
+        public draggingApp: any) {
 
         super(props);
         let apps:any = [];
@@ -29,9 +30,9 @@ export class AppService extends React.Component<any,AppState> {
             currentFolder: null,
             mode: 'Auto',
             snackbarOpen: false,
+            editing: false,
             editingApp: null,
             editingAppFolderId: null,
-            editing: false,
             anchorAdd: null
         };
     }
@@ -86,6 +87,7 @@ export class AppService extends React.Component<any,AppState> {
     }
 
     findAppIndex(app: any): number {
+        if (!app) return -1;
         let found = this.state.currentApps.findIndex(i => i.id == app.id);
         if (found < 0) {
             // fallback, search for same url (downward compatibility if no ID set)
@@ -95,8 +97,7 @@ export class AppService extends React.Component<any,AppState> {
     }
 
     addApp(app: any) {
-        let currentFolder = this.state.currentFolder;
-        let currentApps = this.state.currentApps;
+        let { currentFolder, currentApps } = this.state;
         if (this.isFolder(app)) {
             // for now, do not allow folders in folder
             currentFolder = null;
@@ -113,8 +114,7 @@ export class AppService extends React.Component<any,AppState> {
     }
 
     updateCurrentApp() {
-        let currentFolder = this.state.currentFolder;
-        let currentApps = this.state.currentApps;
+        let { currentFolder, currentApps } = this.state;
 
         let ix = this.findAppIndex(this.state.editingApp);
         if (ix >= 0) currentApps[ix] = this.state.editingApp;
@@ -188,6 +188,16 @@ export class AppService extends React.Component<any,AppState> {
         });
     }
 
+    appDropped(source: any, target: any) {
+        let { currentFolder, currentApps } = this.state;
+
+        let from = this.findAppIndex(source);
+        let to = this.findAppIndex(target);
+
+        currentApps[from] = target;
+        currentApps[to] = source;
+        this.updateApps(currentApps, currentFolder);
+    }
 
     get darkMode(): boolean {
         if (this.state.mode == 'Auto') {

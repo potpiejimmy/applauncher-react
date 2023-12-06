@@ -124,6 +124,9 @@ export default class EditAppComponent extends React.Component<EditAppProps,EditA
                     {this.app?.isFolder(this.editingApp) &&
                         <div className="p-3">Note: Deleting a folder also deletes all apps in the folder.</div>
                     }
+                    <div className="p-3">
+                        Note: To change the order of apps and folders, simply drag on the screen.
+                    </div>
                 </div>
                 <DialogActions>
                     <Button onClick={()=>this.app?.updateCurrentApp()}>OK</Button>

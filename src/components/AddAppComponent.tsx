@@ -215,7 +215,7 @@ export default class AddAppComponent extends React.Component<any,AddAppState> {
                                 </Button>
                             </div>
                             <div>
-                                Enable edit mode to move an app to a different folder
+                                Edit an app in edit mode to move it to a different folder
                             </div>
                         </Box>
                     </div>
