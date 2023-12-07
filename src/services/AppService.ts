@@ -121,13 +121,13 @@ export class AppService extends React.Component<any,AppState> {
             currentApps = this.state.apps;
         }
         currentApps.push(app);
-        this.updateApps(currentApps, currentFolder);
+        this.updateApps(this.state.apps, currentApps, currentFolder);
     }
 
     removeCurrentApp() {
         let ix = this.findAppIndex(this.state.editingApp);
         if (ix >= 0) this.state.currentApps.splice(ix,1);
-        this.updateApps(this.state.currentApps, this.state.currentFolder);
+        this.updateApps(this.state.apps, this.state.currentApps, this.state.currentFolder);
     }
 
     updateCurrentApp() {
@@ -151,12 +151,13 @@ export class AppService extends React.Component<any,AppState> {
             currentApps.push(this.state.editingApp);
         }
 
-        this.updateApps(currentApps, currentFolder);
+        this.updateApps(this.state.apps, currentApps, currentFolder);
     }
 
-    updateApps(apps: any, currentFolder: any) {
+    updateApps(apps: any, currentApps: any, currentFolder: any) {
         this.setState({
-            currentApps: apps,
+            apps: apps,
+            currentApps: currentApps,
             editingApp: null,
             currentFolder: currentFolder
         });
@@ -183,7 +184,7 @@ export class AppService extends React.Component<any,AppState> {
     }
 
     setAllApps(apps: Array<any>): void {
-        this.updateApps(apps, null);
+        this.updateApps(apps, apps, null);
     }
 
     closeFolderImmediate() {
@@ -217,7 +218,7 @@ export class AppService extends React.Component<any,AppState> {
 
         currentApps[from] = target;
         currentApps[to] = source;
-        this.updateApps(currentApps, currentFolder);
+        this.updateApps(this.state.apps, currentApps, currentFolder);
     }
 
     isEffectiveDarkMode(mode: string) {
