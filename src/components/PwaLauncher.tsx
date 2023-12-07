@@ -46,7 +46,7 @@ export default function PwaLauncher({ pwa }: any) {
                 {app?.isFolder(pwa) &&
                     <div className="flex flex-wrap items-center justify-center gap-1 w-[48px] h-[48px]">
                         {pwa.apps.slice(0,4).map((a:any) =>
-                            <img draggable="false" key={a.id} width="22" height="22" src={a.icon}/>
+                            <img draggable="false" key={a.id} width="22" height="22" src={a.icon} onError={e=>e.currentTarget.src='./www.png'}/>
                         )}
                     </div>
                 }

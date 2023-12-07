@@ -58,7 +58,6 @@ export class AppService extends React.Component<any,AppState> {
     }
 
     saveApps(apps: Array<any>) {
-        console.log("SAVING");
         localStorage.setItem("apps", JSON.stringify(apps));
     }
 

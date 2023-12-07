@@ -34,7 +34,7 @@ export default class EditAppComponent extends React.Component<EditAppProps,EditA
     }
 
     get label(): string {
-        return this.editingApp?.name;
+        return this.editingApp?.name || '';
     }
 
     set label(label: string) {
@@ -42,7 +42,7 @@ export default class EditAppComponent extends React.Component<EditAppProps,EditA
     }
 
     get url(): string {
-        return this.editingApp?.url;
+        return this.editingApp?.url || '';
     }
 
     set url(url: string) {
@@ -50,7 +50,7 @@ export default class EditAppComponent extends React.Component<EditAppProps,EditA
     }
 
     get icon(): string {
-        return this.editingApp?.icon;
+        return this.editingApp?.icon || '';
     }
 
     set icon(icon: string) {
