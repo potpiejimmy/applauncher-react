@@ -27,6 +27,7 @@ import PwaLauncher from './components/PwaLauncher';
 
 import AddAppComponent from './components/AddAppComponent';
 import EditAppComponent from './components/EditAppComponent';
+import CloudComponent from './components/CloudComponent';
 
 import './App.css';
 
@@ -34,17 +35,6 @@ class App extends AppService {
 
     componentDidMount() {
         this.load();
-        this.updateHtmlBackground();
-    }
-
-    componentDidUpdate() {
-        this.updateHtmlBackground();
-        this.save();
-    }
-
-    updateHtmlBackground() {
-        // update HTML background according to theme
-        document.body.style.backgroundColor = this.darkMode ? "#111" : "#eee";
     }
 
     info() {
@@ -90,7 +80,7 @@ class App extends AppService {
                                         <IconButton size="small" color="inherit" aria-label="add" onClick={event=>this.setState({anchorAdd: event.currentTarget})}>
                                             <AddIcon />
                                         </IconButton>
-                                        <IconButton size="small" color="inherit" aria-label="cloud">
+                                        <IconButton size="small" color="inherit" aria-label="cloud" onClick={event=>this.setState({anchorCloud: event.currentTarget})}>
                                             <CloudIcon></CloudIcon>
                                         </IconButton>
                                         <IconButton size="small" color="inherit" aria-label="mode" onClick={()=>this.toggleMode()}>
@@ -130,7 +120,18 @@ class App extends AppService {
                                     vertical: 'bottom',
                                     horizontal: 'left',
                                 }}>
-                                <AddAppComponent></AddAppComponent>
+                                <AddAppComponent/>
+                            </Popover>
+
+                            <Popover
+                                open={this.state.anchorCloud != null}
+                                anchorEl={this.state.anchorCloud}
+                                onClose={()=>this.setState({anchorCloud: null})}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}>
+                                <CloudComponent/>
                             </Popover>
 
                             <EditAppComponent/>

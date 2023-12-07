@@ -11,6 +11,7 @@ interface AppState {
     editingApp: any;
     editingAppFolderId: any;
     anchorAdd: any;
+    anchorCloud: any;
 }
 
 export class AppService extends React.Component<any,AppState> {
@@ -33,7 +34,8 @@ export class AppService extends React.Component<any,AppState> {
             editing: false,
             editingApp: null,
             editingAppFolderId: null,
-            anchorAdd: null
+            anchorAdd: null,
+            anchorCloud: null
         };
     }
 
@@ -46,16 +48,25 @@ export class AppService extends React.Component<any,AppState> {
         });
         let mode = localStorage.getItem("mode");
         if (mode) this.setState({mode: mode});
+        else mode = this.state.mode;
+        this.updateHtmlBackground(mode);
     }
 
-    save() {
-        localStorage.setItem("apps", JSON.stringify(this.state.apps));
-        localStorage.setItem("mode", this.state.mode);
+    saveApps(apps: Array<any>) {
+        console.log("SAVING");
+        localStorage.setItem("apps", JSON.stringify(apps));
+    }
+
+    updateHtmlBackground(mode: string) {
+        // update HTML background according to theme
+        document.body.style.backgroundColor = this.isEffectiveDarkMode(mode) ? "#111" : "#eee";
     }
 
     toggleMode() {
         let ix = this.modes.indexOf(this.state.mode);
         let mode = this.modes[(ix + 1) % 3];
+        localStorage.setItem("mode", mode);
+        this.updateHtmlBackground(mode);
         this.setState({mode: mode, snackbarOpen: false});
         this.openSnackbar(mode == 'Auto' ? 'Automatic dark/light mode activated' : mode + " mode activated");
     }
@@ -74,7 +85,8 @@ export class AppService extends React.Component<any,AppState> {
     closeDialogs() {
         this.setState({
             editingApp: null,
-            anchorAdd: null
+            anchorAdd: null,
+            anchorCloud: null
         })
     }
 
@@ -143,7 +155,7 @@ export class AppService extends React.Component<any,AppState> {
             editingApp: null,
             currentFolder: currentFolder
         });
-        this.save();
+        this.saveApps(apps);
     }
 
     onAppClicked(app: any, el: HTMLDivElement) {
@@ -163,6 +175,10 @@ export class AppService extends React.Component<any,AppState> {
             editingApp: app,
             editingAppFolderId: this.state.currentFolder?.id || 'root'
         });
+    }
+
+    setAllApps(apps: Array<any>): void {
+        this.updateApps(apps, null);
     }
 
     closeFolderImmediate() {
@@ -199,12 +215,16 @@ export class AppService extends React.Component<any,AppState> {
         this.updateApps(currentApps, currentFolder);
     }
 
-    get darkMode(): boolean {
-        if (this.state.mode == 'Auto') {
+    isEffectiveDarkMode(mode: string) {
+        if (mode == 'Auto') {
             return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         } else {
-            return this.state.mode == 'Dark';
+            return mode == 'Dark';
         }
+    }
+
+    get darkMode(): boolean {
+        return this.isEffectiveDarkMode(this.state.mode);
     }
 
     get muiMode(): 'light' | 'dark' {

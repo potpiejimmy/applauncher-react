@@ -116,7 +116,7 @@ export default class EditAppComponent extends React.Component<EditAppProps,EditA
                                     fullWidth variant="standard">
                                 <MenuItem value="root"><em>&lt;Root folder&gt;</em></MenuItem>
                                 {this.app?.getFolders().map(f => 
-                                    <MenuItem value={f.id}>{f.name}</MenuItem>
+                                    <MenuItem key={f.id} value={f.id}>{f.name}</MenuItem>
                                 )}
                             </Select>
                         </fieldset>
