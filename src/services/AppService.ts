@@ -19,12 +19,17 @@ export class AppService extends React.Component<any,AppState> {
     modes = ['Light','Dark','Auto'];
     api = new AppsApi();
 
-    constructor(props: any,
-        public snackbarText: string,
-        public draggingApp: any) {
+    snackbarText: string|null;
+    draggingApp: any;
+
+    constructor(props: any) {
 
         super(props);
-        let apps:any = [];
+        
+        this.snackbarText = null;
+        this.draggingApp = null;
+
+        let apps:Array<any> = [];
         this.state = {
             apps: apps,
             currentApps: apps,
