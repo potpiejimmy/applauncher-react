@@ -6,6 +6,7 @@ interface AppState {
     currentApps: Array<any>;
     currentFolder: any;
     mode: string;
+    systemDarkMode: boolean;
     snackbarOpen: boolean;
     editing: boolean;
     editingApp: any;
@@ -35,6 +36,7 @@ export class AppService extends React.Component<any,AppState> {
             currentApps: apps,
             currentFolder: null,
             mode: 'Auto',
+            systemDarkMode: this.determineSystemDarkMode(true),
             snackbarOpen: false,
             editing: false,
             editingApp: null,
@@ -222,10 +224,21 @@ export class AppService extends React.Component<any,AppState> {
 
     isEffectiveDarkMode(mode: string) {
         if (mode == 'Auto') {
-            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            return this.determineSystemDarkMode(false);
         } else {
             return mode == 'Dark';
         }
+    }
+
+    determineSystemDarkMode(registerChangeListener: boolean): boolean {
+        const darkModePreference = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+        if (registerChangeListener) {
+            darkModePreference.addEventListener("change", e => {
+                this.setState({systemDarkMode: e.matches});
+                this.updateHtmlBackground(this.state.mode);
+            });
+        }
+        return darkModePreference.matches;
     }
 
     get darkMode(): boolean {
