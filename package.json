@@ -28,6 +28,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "release": "npm run build && cd build && zip -r dist.zip * && scp dist.zip applauncher@applauncher.site:httpdocs/ && cd .. && ssh applauncher@applauncher.site 'cd httpdocs && unzip -o dist.zip'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
